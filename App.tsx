@@ -5,6 +5,8 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
+  Modal,
+  Pressable,
 } from "react-native";
 import StepIndicator from "react-native-step-indicator";
 import React, { useState } from "react";
@@ -13,8 +15,9 @@ import Identification from "./components/Identification";
 import Position from "./components/Position";
 import Skills from "./components/Skills";
 import Final from "./components/Final";
+import IPersona from "./IForm";
 
-const labels = ["Identificação", "Dados", "Posicionamento", "Habilidades" ,"Finalizar"];
+const labels = ["Identificação", "Dados", "Posicionamento", "Habilidades"];
 const customStyles = {
   stepIndicatorSize: 25,
   currentStepIndicatorSize: 30,
@@ -50,28 +53,81 @@ export default function App() {
     const Form = FORMS[currentStep].component;
     return (
       <>
-        <Form></Form>
-        <TouchableOpacity
-          onPress={() => {
-            nextStep();
-          }}
-        >
-          <Text style={styles.btn}>
-            {currentStep === 3 ? "Finalizar" : "Avançar"}
-          </Text>
-        </TouchableOpacity>
+        <Form nextStep={nextStep}></Form>
       </>
     );
   }
 
-  const [currentStep, setCurrentStep] = useState(0);
+  function ResultForm() {
+    return (
+      <TouchableOpacity>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            alert("Modal has been closed.");
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <View style={{ flexDirection: "row" }}>
+                <Text style={styles.modalText}>
+                  {formattedObject}
+                </Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => copy(JSON.stringify(form))}
+                >
+                  <Text style={styles.textStyle}>Compartilhar</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => setModalVisible(!modalVisible)}
+                >
+                  <Text style={styles.textStyle}>Fechar</Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </Modal>
+        <Pressable
+          style={[styles.button, styles.buttonOpen]}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={styles.textStyle}>Ver informações</Text>
+        </Pressable>
+      </TouchableOpacity>
+    );
+  }
 
-  const nextStep = () => {
+  const copy = (text: any) => {
+    navigator.clipboard.writeText(text);
+  };
+
+  const [currentStep, setCurrentStep] = useState(0);
+  const [form, setForm] = useState<IPersona>({} as IPersona);
+  const [modalVisible, setModalVisible] = useState(false);
+  const formattedObject = Object.entries(form).map(([key, value]) => (
+    <Text key={key}>
+      {key}: {value + "\n"}
+    </Text>
+  ));
+
+  const nextStep = (params: IPersona) => {
+    setForm({ ...form, ...params });
     if (currentStep < FORMS.length) setCurrentStep(currentStep + 1);
-    if(currentStep+1 === FORMS.length){
-      alert("Formulário finalizado")
-      setCurrentStep(0)
+    if (currentStep + 1 === FORMS.length) {
+      setCurrentStep(0);
     }
+    test();
+  };
+
+  const test = () => {
+    console.log(form);
   };
 
   return (
@@ -82,9 +138,10 @@ export default function App() {
           labels={labels}
           currentPosition={currentStep}
           customStyles={customStyles}
-          stepCount={5}
+          stepCount={4}
         />
         <StepForm />
+        {currentStep === 4 ? <ResultForm /> : ""}
       </View>
     </ScrollView>
   );
@@ -103,6 +160,50 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "#fff",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modal: {
+    flexDirection: "column",
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    flexDirection: "column",
   },
 });
 

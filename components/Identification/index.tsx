@@ -1,10 +1,18 @@
-import { useState } from "react";
-import { View, StyleSheet, Text, TextInput } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import { BigHead } from "react-native-bigheads";
 import { RadioButton } from "react-native-paper";
+import IStep from "../../IStep";
 
-export default function Identification() {
+export default function Identification({nextStep}: IStep) {
   const [text, onChangeText] = useState("");
+  const [value, setValue] = useState('');
   const [checkedReact, setCheckedReact] = useState(false);
   const [checkedGraph, setCheckedGraph] = useState(false);
   const [checkedVue, setCheckedVue] = useState(false);
@@ -17,6 +25,7 @@ export default function Identification() {
         value={text}
         placeholder="Insira seu nome"
       />
+      <RadioButton.Group onValueChange={newValue => setValue(newValue)} value={value}>
       <Text style={styles.title}>2. Selecione o seu avatar</Text>
       <BigHead
         accessory="none"
@@ -40,9 +49,9 @@ export default function Identification() {
         size={300}
         skinTone="light"
       />
-      <View style={{ display: "flex", alignItems: 'center' }}>
+      <View style={{ display: "flex", alignItems: "center" }}>
         <RadioButton
-          value="first"
+          value="React"
           status={checkedReact ? "checked" : "unchecked"}
           onPress={() => {
             setCheckedReact(!checkedReact);
@@ -72,9 +81,9 @@ export default function Identification() {
         size={300}
         skinTone="light"
       />
-      <View style={{ display: "flex", alignItems: 'center' }}>
+      <View style={{ display: "flex", alignItems: "center" }}>
         <RadioButton
-          value="second"
+          value="GraphQl"
           status={checkedGraph ? "checked" : "unchecked"}
           onPress={() => {
             setCheckedGraph(!checkedGraph);
@@ -104,9 +113,9 @@ export default function Identification() {
         size={300}
         skinTone="light"
       />
-      <View style={{ display: "flex", alignItems: 'center' }}>
+      <View style={{ display: "flex", alignItems: "center" }}>
         <RadioButton
-          value="third"
+          value="Vue"
           status={checkedVue ? "checked" : "unchecked"}
           onPress={() => {
             setCheckedVue(!checkedVue);
@@ -114,6 +123,10 @@ export default function Identification() {
         />
         <Text>Vue Avatar</Text>
       </View>
+      </RadioButton.Group>
+      <TouchableOpacity onPress={() => { nextStep({'Nome' : text, 'avatar': value}) }}>
+        <Text style={styles.btn}>Avançar</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -134,5 +147,13 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     width: "90%",
+  },
+  btn: {
+    backgroundColor: "#00ff",
+    padding: 20,
+    textAlign: "center",
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#fff",
   },
 });

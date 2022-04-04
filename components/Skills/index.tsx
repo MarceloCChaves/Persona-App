@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Checkbox } from 'react-native-paper';
+import IStep from "../../IStep";
 
-const MyComponent = () => {
+const MyComponent = ({nextStep}: IStep) => {
   const [checkedComunicative, setCheckedComunicative] = useState(false);
   const [checkedColaborative, setCheckedColaborative] = useState(false);
   const [checkedCreative, setCheckedCreative] = useState(false);
@@ -68,6 +69,9 @@ const MyComponent = () => {
       />
       <Text style={{ display: 'flex', alignItems: 'center'}}>Liderança técnica</Text>
       </View>
+      <TouchableOpacity onPress={() => { nextStep({'Comunicativo': checkedComunicative, 'Colaborativo': checkedColaborative, 'Criativo': checkedCreative, 'Tomada de decisão': checkedDecision, 'Gestor de projetos': checkedProjects, 'Liderança': checkedLeader}) }}>
+        <Text style={styles.btn}>Avançar</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -86,5 +90,13 @@ const styles = StyleSheet.create({
   },
   alternative: {
     flexDirection: 'row',
-  }
+  },
+  btn: {
+    backgroundColor: "#00ff",
+    padding: 20,
+    textAlign: "center",
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#fff",
+  },
 });

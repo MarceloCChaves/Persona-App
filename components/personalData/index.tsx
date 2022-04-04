@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import {View, Text, TextInput, StyleSheet, Picker} from 'react-native'
+import IStep from "../../IStep";
+import {View, Text, TextInput, StyleSheet, Picker, TouchableOpacity} from 'react-native'
 
-export default function PersonalData(){
+export default function PersonalData({nextStep}: IStep){
   const [text, onChangeText] = useState("");
   const [phone, onChangePhone] = useState("");
   const [email, onChangeEmail] = useState("");
-  const [selectedValueSex, setSelectedValueSex] = useState("");
-  const [selectedValueSchooling, setSelectedSchooling] = useState("");
+  const [selectedValueSex, setSelectedValueSex] = useState("Masculino");
+  const [selectedValueSchooling, setSelectedSchooling] = useState("Analfabeto");
   return(
     <View style={styles.Container}>
       <Text style={styles.title}>Idade</Text>
@@ -34,12 +35,12 @@ export default function PersonalData(){
         onValueChange={(itemValue) => setSelectedSchooling(itemValue)}
       >
         <Picker.Item label="Analfabeto" value="Analfabeto" />
-        <Picker.Item label="Ensino fundamental incompleto" value="EFI" />
-        <Picker.Item label="Ensino fundamental completo" value="EFC" />
-        <Picker.Item label="Ensino médio incompleto" value="EMI" />
-        <Picker.Item label="Ensino médio completo" value="EMC" />
-        <Picker.Item label="Superior completo (ou graduação)" value="SC" />
-        <Picker.Item label="Pós-graduação" value="PG" />
+        <Picker.Item label="Ensino fundamental incompleto" value="Ensino Fundamental Incompleto" />
+        <Picker.Item label="Ensino fundamental completo" value="Ensino Fundamental Completo" />
+        <Picker.Item label="Ensino médio incompleto" value="Ensino Médio Incompleto" />
+        <Picker.Item label="Ensino médio completo" value="Ensino Médio Completo" />
+        <Picker.Item label="Superior completo (ou graduação)" value="Superior Completo" />
+        <Picker.Item label="Pós-graduação" value="Pós Graduação" />
       </Picker>
       <Text style={styles.title}>Telefone</Text>
       <TextInput
@@ -57,6 +58,9 @@ export default function PersonalData(){
         placeholder="Insira o seu email"
         keyboardType='email-address'
       />
+      <TouchableOpacity onPress={() => { nextStep({'email': email, 'phone': text, 'Idade': text , 'sexo': selectedValueSex, 'Grau': selectedValueSchooling}) }}>
+        <Text style={styles.btn}>Avançar</Text>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -77,5 +81,13 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     width: '90%'
+  },
+  btn: {
+    backgroundColor: "#00ff",
+    padding: 20,
+    textAlign: "center",
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#fff",
   },
 })
